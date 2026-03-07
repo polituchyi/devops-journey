@@ -1,23 +1,46 @@
 #!/usr/bin/env bash
 
-#show current user and ids
+# stop script if any command fails
+set -e
+
+echo "Current user:"
 whoami
+
+echo "User ID and groups:"
 id
-#inspect user databases
-sudo cat /etc/passwd
-sudo cat /etc/shadow
-#create user + password
+
+echo "Inspect user database"
+sudo cat /etc/passwd | tail -5
+
+echo "Create new user"
 sudo useradd -m -s /bin/bash testuser
-sudo passwd testpassword
-#create group + add user to group
+
+echo "Set password for testuser"
+sudo passwd testuser
+
+echo "Create group"
 sudo groupadd dev-team
+
+echo "Add user to group"
 sudo usermod -aG dev-team testuser
-#verify membership
-group testuser
+
+echo "Verify membership"
+groups testuser
 id testuser
-#permissions/ownership demo
+
+echo "Create test file"
 touch demo.txt
+
+echo "Check file permissions"
 ls -l demo.txt
-chmod 766 demo.txt
-chown testuser:dev-group demo.txt
+
+echo "Change permissions"
+chmod 760 demo.txt
+
+echo "Change ownership"
+sudo chown testuser:dev-team demo.txt
+
+echo "Final file state"
 ls -l demo.txt
+
+echo "Lab completed"
